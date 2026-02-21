@@ -16,6 +16,7 @@ Proveer un framework reproducible que:
 
 ## Estructura del Proyecto
 /docs
+
 AI_PLAYBOOK.md
 CHANGE_POLICY.md
 STACK_DECISIONS.md
