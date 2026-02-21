@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        if: hashFiles('package.json') != ''
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Node dependencies
+        if: hashFiles('package.json') != ''
+        run: npm install
+
+      - name: Run Node tests
+        if: hashFiles('package.json') != ''
+        run: npm test -- --coverage
+
+      - name: Setup Python
+        if: hashFiles('requirements.txt') != ''
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        if: hashFiles('requirements.txt') != ''
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Run Python tests
+        if: hashFiles('requirements.txt') != ''
+        run: pytest --cov=src
