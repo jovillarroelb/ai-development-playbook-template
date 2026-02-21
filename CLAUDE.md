@@ -1,5 +1,8 @@
 # AI Development Playbook — Instrucciones para Claude Code
 
+> Este archivo es específico para **Claude Code**.
+> Para otros agentes (Antigravity, Gemini, Cursor, Windsurf): ver `AGENTS.md`.
+
 ## LEER ANTES DE CUALQUIER ACCION
 
 Este proyecto opera bajo gobernanza estricta de IA. Las reglas siguientes son OBLIGATORIAS.

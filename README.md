@@ -23,7 +23,8 @@ Proveer un framework técnico que:
 
 ```
 .
-├── CLAUDE.md                          ← Instrucciones automáticas para Claude Code
+├── CLAUDE.md                          ← Instrucciones para Claude Code
+├── AGENTS.md                          ← Instrucciones para Antigravity, Gemini, Cursor, Windsurf
 ├── VERSION                            ← Versión del Playbook
 ├── README.md                          ← Este archivo
 ├── .githooks/
@@ -32,7 +33,7 @@ Proveer un framework técnico que:
 ├── .github/workflows/
 │   └── ci.yml                         ← CI con umbrales de cobertura (80%)
 ├── docs/
-│   ├── AI_PLAYBOOK.md                 ← Reglas completas de operación
+│   ├── AI_PLAYBOOK.md                 ← Reglas completas de operación (fuente de verdad)
 │   ├── CHANGE_POLICY.md               ← Modos de cambio (BUGFIX/MINOR_FEATURE/REFACTOR)
 │   ├── STACK_DECISIONS.md             ← Stack tecnológico aprobado
 │   ├── ARCHITECTURE.md                ← Arquitectura del sistema
@@ -88,7 +89,7 @@ cat docs/AI_PLAYBOOK.md
 
 1. Crear rama con prefijo correcto: `git checkout -b bugfix/nombre`
 2. Declarar modo al inicio de la sesión con IA: `[BUGFIX]`, `[MINOR_FEATURE]`, o `[REFACTOR]`
-3. Ejecutar intervención de IA (leerá `CLAUDE.md` automáticamente si usas Claude Code).
+3. Ejecutar intervención de IA (el agente leerá `CLAUDE.md` o `AGENTS.md` automáticamente según el LLM).
 4. Revisar el diff manualmente.
 5. Ejecutar tests localmente.
 6. Commit con formato correcto: `git commit -m "[BUGFIX] descripcion"`
@@ -109,16 +110,42 @@ cat docs/AI_PLAYBOOK.md
 
 ---
 
-## CLAUDE.md — Gobernanza Automática para IA
+## Agentes de IA Soportados
 
-El archivo `CLAUDE.md` en la raíz es leído automáticamente por Claude Code al iniciar cada sesión. Contiene:
+Este framework es compatible con múltiples LLMs como agentes de coding:
 
-- Archivos de contexto que la IA debe leer antes de actuar.
-- Restricciones absolutas de operación.
-- Convenciones de rama y commit.
-- Protocolo ante incertidumbre.
+| Agente | Archivo de instrucciones | Estado |
+|---|---|---|
+| **Claude Code** | `CLAUDE.md` | Soportado — preferido |
+| **Google Antigravity** | `AGENTS.md` | Soportado |
+| **Google Gemini CLI** | `AGENTS.md` | Soportado |
+| **Cursor** | `AGENTS.md` | Soportado |
+| **Windsurf** | `AGENTS.md` | Soportado |
+| **OpenAI Codex CLI** | `AGENTS.md` + contexto manual | Soportado parcialmente |
+| Otros (Kilo Code, etc.) | `AGENTS.md` | Compatible |
 
-No eliminar ni vaciar `CLAUDE.md`.
+**Jerarquía de archivos de instrucciones:**
+
+```
+docs/AI_PLAYBOOK.md   ← Fuente de verdad (reglas canónicas)
+       ↓
+CLAUDE.md             ← Claude Code lo lee automáticamente al inicio
+AGENTS.md             ← Antigravity, Gemini, Cursor, Windsurf lo leen automáticamente
+```
+
+No eliminar ni vaciar ninguno de los dos archivos de instrucciones.
+
+---
+
+## OpenAI Codex CLI — Configuración Manual
+
+Codex CLI no lee archivos de instrucciones automáticamente desde el proyecto. Pasar el contexto explícitamente:
+
+```bash
+cat AGENTS.md | codex -
+# o
+codex --context AGENTS.md "descripcion de la tarea"
+```
 
 ---
 
@@ -152,4 +179,4 @@ Versionado semántico definido en `VERSION`:
 - `MINOR`: Nuevas reglas, procesos o herramientas.
 - `PATCH`: Ajustes menores y correcciones.
 
-Versión actual: `1.1.0`
+Versión actual: `1.2.0`

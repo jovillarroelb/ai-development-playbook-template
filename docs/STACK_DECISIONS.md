@@ -35,6 +35,12 @@
 - Cobertura mínima de tests: **80%**
 - Revisión de diff obligatoria antes de merge
 
+## Agentes de IA Configurados
+
+- **Claude Code:** `CLAUDE.md` (leído automáticamente)
+- **Antigravity / Gemini / Cursor / Windsurf:** `AGENTS.md` (leído automáticamente)
+- **OpenAI Codex CLI:** pasar `AGENTS.md` como contexto manual
+
 ## Reglas para la IA
 
 - No introducir tecnologías no listadas en este archivo.

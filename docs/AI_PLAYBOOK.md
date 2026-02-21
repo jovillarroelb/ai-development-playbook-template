@@ -182,16 +182,20 @@ Es una decisión de diseño.
 
 ---
 
-## 12. Forzado Técnico — CLAUDE.md
+## 12. Forzado Técnico — Archivos de Instrucciones por Agente
 
-El archivo `CLAUDE.md` en la raíz del repositorio es leído automáticamente por Claude Code al inicio de cada sesión. Contiene:
+Este Playbook opera con múltiples agentes de IA a través de dos archivos de instrucciones:
 
-- Los archivos de contexto que la IA debe leer antes de actuar.
-- Las restricciones absolutas de operación.
-- Las convenciones de rama y commit.
-- El protocolo ante incertidumbre.
+| Archivo | Agente(s) | Mecanismo |
+|---|---|---|
+| `CLAUDE.md` | Claude Code | Leído automáticamente al iniciar cada sesión |
+| `AGENTS.md` | Google Antigravity, Gemini CLI, Cursor, Windsurf, Kilo Code | Leído automáticamente (estándar agents.md) |
 
-`CLAUDE.md` es la primera línea de defensa técnica del Playbook.
+Ambos archivos contienen las mismas reglas operacionales y apuntan a `docs/AI_PLAYBOOK.md` como fuente de verdad.
+
+Para OpenAI Codex CLI, pasar `AGENTS.md` como contexto explícito al iniciar.
+
+`docs/AI_PLAYBOOK.md` es la fuente canónica. Los archivos de instrucciones son su proyección para cada agente.
 
 ---
 
