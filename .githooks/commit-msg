@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# .githooks/commit-msg
+# Valida que el mensaje de commit siga la convención del Playbook.
+# Formato obligatorio: [BUGFIX], [MINOR_FEATURE], o [REFACTOR] al inicio.
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Permitir commits de merge automáticos
+if echo "$COMMIT_MSG" | grep -qE '^Merge '; then
+    exit 0
+fi
+
+# Permitir commits de revert automáticos
+if echo "$COMMIT_MSG" | grep -qE '^Revert '; then
+    exit 0
+fi
+
+# Validar prefijo obligatorio
+if echo "$COMMIT_MSG" | grep -qE '^\[(BUGFIX|MINOR_FEATURE|REFACTOR)\] .+'; then
+    exit 0
+fi
+
+echo ""
+echo "[ERROR] Mensaje de commit inválido."
+echo ""
+echo "El AI Development Playbook exige el siguiente formato:"
+echo "  [BUGFIX] descripcion del cambio"
+echo "  [MINOR_FEATURE] descripcion de la feature"
+echo "  [REFACTOR] descripcion del refactor"
+echo ""
+echo "Mensaje recibido: '$COMMIT_MSG'"
+echo ""
+exit 1

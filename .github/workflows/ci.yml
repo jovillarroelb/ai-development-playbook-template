@@ -6,38 +6,84 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  # ----------------------------------------
+  # Job: Python Backend
+  # ----------------------------------------
+  python-tests:
+    name: Python — Tests y Cobertura
     runs-on: ubuntu-latest
+    if: hashFiles('requirements.txt') != ''
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup Node
-        if: hashFiles('package.json') != ''
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install Node dependencies
-        if: hashFiles('package.json') != ''
-        run: npm install
-
-      - name: Run Node tests
-        if: hashFiles('package.json') != ''
-        run: npm test -- --coverage
-
-      - name: Setup Python
-        if: hashFiles('requirements.txt') != ''
+      - name: Configurar Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: Install Python dependencies
-        if: hashFiles('requirements.txt') != ''
+      - name: Instalar dependencias Python
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
-      - name: Run Python tests
-        if: hashFiles('requirements.txt') != ''
-        run: pytest --cov=src
+      - name: Ejecutar tests Python con cobertura >= 80%
+        run: pytest --cov=src --cov-report=term-missing --cov-fail-under=80
+
+  # ----------------------------------------
+  # Job: Node.js Backend
+  # ----------------------------------------
+  node-tests:
+    name: Node.js — Tests y Cobertura
+    runs-on: ubuntu-latest
+    if: hashFiles('package.json') != ''
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configurar Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar dependencias Node
+        run: npm install
+
+      - name: Configurar umbral de cobertura (80%)
+        run: |
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            pkg.jest = pkg.jest || {};
+            pkg.jest.coverageThreshold = {
+              global: { lines: 80, functions: 80, branches: 70, statements: 80 }
+            };
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+          "
+
+      - name: Ejecutar tests Node con cobertura >= 80%
+        run: npm test -- --coverage
+
+  # ----------------------------------------
+  # Job: Frontend (React o Vue con Vite/Vitest)
+  # ----------------------------------------
+  frontend-tests:
+    name: Frontend — Tests y Cobertura
+    runs-on: ubuntu-latest
+    if: hashFiles('frontend/package.json') != ''
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configurar Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar dependencias frontend
+        working-directory: frontend
+        run: npm install
+
+      - name: Ejecutar tests frontend con cobertura
+        working-directory: frontend
+        run: npm run test -- --coverage

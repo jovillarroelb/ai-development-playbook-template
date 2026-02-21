@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# .githooks/pre-commit
+# Valida que la rama actual siga la convención de nombres del Playbook.
+# Convenciones permitidas: bugfix/, feature/, refactor/, main, develop
+
+BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null)
+
+# Permitir main y develop sin prefijo
+if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "develop" ]; then
+    exit 0
+fi
+
+# Validar prefijos permitidos
+if echo "$BRANCH" | grep -qE '^(bugfix|feature|refactor)/[a-z0-9_-]+$'; then
+    exit 0
+fi
+
+echo ""
+echo "[ERROR] Nombre de rama inválido: '$BRANCH'"
+echo ""
+echo "El AI Development Playbook exige el siguiente formato:"
+echo "  bugfix/descripcion-del-bug"
+echo "  feature/descripcion-de-la-feature"
+echo "  refactor/descripcion-del-refactor"
+echo ""
+echo "Renombrar la rama antes de continuar:"
+echo "  git branch -m <nuevo-nombre>"
+echo ""
+exit 1
